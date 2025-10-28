@@ -1,0 +1,15 @@
+[Unit]
+Description=pythonfirewall Flask app
+After=network.target
+
+[Service]
+User=pyfw
+Group=pyfw
+WorkingDirectory=/home/pyfw/pythonfirewall
+EnvironmentFile=/etc/default/pythonfirewall
+ExecStart=/home/pyfw/pythonfirewall/venv/bin/python /home/pyfw/pythonfirewall/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
