@@ -115,8 +115,3 @@ Security checklist before exposing to the internet
 - Prefer VPN or reverse SSH tunnel instead of direct port forwarding.
 - Minimize sudo privileges for the web user; prefer read-only views unless necessary.
 
-If you want, I can:
-- produce a completed visudo snippet tailored to nft or iptables,
-- give the exact nginx site file populated with your domain,
-- or generate the prefilled systemd file and a one-line install script for the Pi.
-```
