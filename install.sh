@@ -150,7 +150,7 @@ chown -R pyfw:pyfw "$INSTALL_DIR"
 echo -e "${YELLOW}Creating environment configuration...${NC}"
 cat > /etc/default/pythonfirewall <<EOF
 ADMIN_USER="admin"
-ADMIN_PASS="changeme_$(openssl rand -hex 8)"
+ADMIN_PASS="changeme_$(openssl rand -hex 16)"
 PORT="8080"
 ALLOW_FIREWALL_CONTROL="false"
 USE_NFT="false"

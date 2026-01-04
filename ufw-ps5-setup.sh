@@ -46,9 +46,7 @@ ufw allow 53/udp comment 'DNS UDP'
 # PS5 Network Ports
 echo "Configuring PS5-specific ports..."
 
-# PSN connectivity
-ufw allow 80/tcp comment 'PS5 HTTP'
-ufw allow 443/tcp comment 'PS5 HTTPS'
+# PSN connectivity (HTTP/HTTPS already allowed above)
 ufw allow 3478:3480/tcp comment 'PS5 PSN'
 ufw allow 3478:3479/udp comment 'PS5 Voice Chat'
 
