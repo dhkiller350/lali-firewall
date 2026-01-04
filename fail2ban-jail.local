@@ -1,0 +1,94 @@
+# Fail2ban configuration for Raspberry Pi 3B+ Firewall
+# Place this file at: /etc/fail2ban/jail.local
+
+[DEFAULT]
+# Ban settings
+bantime  = 86400       # Ban for 24 hours (increased for better security)
+findtime = 600         # Look back 10 minutes
+maxretry = 5           # Allow 5 retries before ban
+banaction = ufw        # Use UFW for banning
+backend = systemd      # Use systemd for log monitoring
+
+# Email notifications (configure if needed)
+destemail = root@localhost
+sendername = Fail2Ban
+mta = sendmail
+
+# Action for banning
+action = %(action_mwl)s
+
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 5
+bantime = 3600
+
+[sshd-ddos]
+enabled = true
+port = ssh
+filter = sshd-ddos
+logpath = /var/log/auth.log
+maxretry = 10
+bantime = 3600
+
+# Nginx protection (for the dashboard proxy)
+[nginx-http-auth]
+enabled = true
+filter = nginx-http-auth
+port = http,https
+logpath = /var/log/nginx/error.log
+maxretry = 5
+bantime = 3600
+
+[nginx-noscript]
+enabled = true
+port = http,https
+filter = nginx-noscript
+logpath = /var/log/nginx/access.log
+maxretry = 6
+bantime = 3600
+
+[nginx-badbots]
+enabled = true
+port = http,https
+filter = nginx-badbots
+logpath = /var/log/nginx/access.log
+maxretry = 2
+bantime = 7200
+
+[nginx-noproxy]
+enabled = true
+port = http,https
+filter = nginx-noproxy
+logpath = /var/log/nginx/access.log
+maxretry = 2
+bantime = 7200
+
+# Squid proxy protection
+[squid]
+enabled = true
+port = 3128
+filter = squid
+logpath = /var/log/squid/access.log
+maxretry = 10
+bantime = 3600
+
+# Generic port scan detection
+[port-scan]
+enabled = true
+filter = port-scan
+logpath = /var/log/syslog
+maxretry = 3
+bantime = 86400
+
+# Unbound DNS protection (if needed)
+# Uncomment if you experience DNS abuse
+# [unbound]
+# enabled = true
+# port = 53
+# filter = unbound
+# logpath = /var/log/unbound/unbound.log
+# maxretry = 20
+# bantime = 3600

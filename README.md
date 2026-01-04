@@ -1,8 +1,9 @@
 ```markdown
-# pythonfirewall (Raspberry Pi 5 — Kali Linux)
+# pythonfirewall (Raspberry Pi 3B+ — Kali Linux)
 
-A small Flask web dashboard intended for Raspberry Pi 5 running Kali Linux.
-It listens on 0.0.0.0 so other devices on your LAN can access it (PlayStation, Xbox, mobile, PC).
+A small Flask web dashboard intended for Raspberry Pi 3B+ running Kali Linux.
+It listens on 0.0.0.0 so other devices on your LAN can access it (PlayStation 5, Xbox, mobile, PC).
+Includes integrated support for Squid proxy, Unbound DNS, UFW firewall, and Fail2ban intrusion prevention.
 
 Important:
 - Change ADMIN_PASS before exposing to networks.
@@ -14,7 +15,7 @@ Quick local setup
 
 2. Install runtime and tools:
    sudo apt update
-   sudo apt install -y python3 python3-venv python3-pip git nginx certbot
+   sudo apt install -y python3 python3-venv python3-pip git nginx certbot squid unbound ufw fail2ban
 
 3. Clone repo and install:
    git clone <your-repo-url> pythonfirewall
@@ -50,7 +51,11 @@ Sudoers (visudo snippet)
   If you use iptables instead:
   pyfw ALL=(root) NOPASSWD: /sbin/iptables, /sbin/iptables-save, /sbin/iptables-restore
 
+  For UFW read-only status (recommended for dashboard):
+  pyfw ALL=(root) NOPASSWD: /usr/sbin/ufw status, /usr/sbin/ufw status verbose
+
   IMPORTANT: avoid giving broad or shell-wrapped privileges. Test carefully.
+  The dashboard defaults to read-only mode (ALLOW_FIREWALL_CONTROL="false") for security.
 
 Nginx reverse-proxy + Let's Encrypt (brief)
 - Basic nginx site (adjust server_name and proxy_pass):
@@ -114,4 +119,59 @@ Security checklist before exposing to the internet
 - Use HTTPS (reverse proxy with nginx + Let's Encrypt or Cloudflare Tunnel).
 - Prefer VPN or reverse SSH tunnel instead of direct port forwarding.
 - Minimize sudo privileges for the web user; prefer read-only views unless necessary.
+
+## Integrated Components Setup
+
+### Squid Proxy Configuration
+Squid provides HTTP/HTTPS caching and proxy services, useful for reducing bandwidth and improving PS5 download speeds.
+
+1. Copy the provided squid.conf to /etc/squid/squid.conf
+2. Configure PS5 to use proxy: Settings > Network > Set Up Internet Connection > Custom > Proxy Server
+3. Use Raspberry Pi IP address and port 3128
+4. Start and enable:
+   sudo systemctl enable --now squid
+   sudo systemctl status squid
+
+### Unbound DNS Configuration
+Unbound provides secure, fast DNS resolution with DNSSEC validation.
+
+1. Copy the provided unbound.conf to /etc/unbound/unbound.conf.d/custom.conf
+2. Configure devices to use RPi as DNS server (use RPi's IP address)
+3. Start and enable:
+   sudo systemctl enable --now unbound
+   sudo systemctl status unbound
+
+### UFW Firewall Configuration
+UFW (Uncomplicated Firewall) provides simple firewall management with PS5-optimized rules.
+
+1. Enable UFW:
+   sudo ufw enable
+2. Apply PS5 rules using the provided script:
+   sudo bash ufw-ps5-setup.sh
+3. Check status:
+   sudo ufw status verbose
+
+Key PS5 ports:
+- TCP 80, 443 (HTTP/HTTPS)
+- TCP 3478-3480 (PSN)
+- UDP 3478-3479 (PSN Voice Chat)
+- TCP 3658 (PSN)
+
+### Fail2ban Configuration
+Fail2ban monitors logs and blocks suspicious IP addresses automatically.
+
+1. Copy fail2ban configurations to /etc/fail2ban/
+2. Enable and start:
+   sudo systemctl enable --now fail2ban
+   sudo systemctl status fail2ban
+3. Check banned IPs:
+   sudo fail2ban-client status
+
+### PS5 Network Optimization
+For optimal PS5 performance:
+1. Set PS5 to use static IP in your router
+2. Configure PS5 DNS to use RPi IP (Unbound)
+3. Configure PS5 proxy to use RPi IP:3128 (Squid)
+4. Enable DMZ or port forwarding for PS5 IP in router (optional)
+5. Set PS5 MTU to 1473 for PPPoE or 1500 for standard connections
 
