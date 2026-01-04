@@ -30,7 +30,7 @@ TEMPLATE = """
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>pythonfirewall - {{host}}</title>
+  <title>t</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     pre { background:#f4f4f4; padding:10px; overflow:auto; max-height:60vh; }
