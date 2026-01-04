@@ -3,7 +3,7 @@
 
 [DEFAULT]
 # Ban settings
-bantime  = 3600        # Ban for 1 hour
+bantime  = 86400       # Ban for 24 hours (increased for better security)
 findtime = 600         # Look back 10 minutes
 maxretry = 5           # Allow 5 retries before ban
 banaction = ufw        # Use UFW for banning

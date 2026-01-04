@@ -69,9 +69,11 @@ echo "Allowing DHCP..."
 ufw allow 67:68/udp comment 'DHCP'
 
 # Allow local network completely (adjust subnet as needed)
-# Uncomment if you trust your local network completely
+# Uncomment and modify to match your actual local network subnet
+# Example: 192.168.1.0/24 for most home networks
+# WARNING: This allows ALL traffic from the specified subnet
 # echo "Allowing all local network traffic..."
-# ufw allow from 192.168.0.0/16 comment 'Local Network'
+# ufw allow from 192.168.1.0/24 comment 'Local Network'
 
 # Enable UFW
 echo "Enabling UFW..."

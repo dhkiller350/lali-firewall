@@ -51,7 +51,11 @@ Sudoers (visudo snippet)
   If you use iptables instead:
   pyfw ALL=(root) NOPASSWD: /sbin/iptables, /sbin/iptables-save, /sbin/iptables-restore
 
+  For UFW read-only status (recommended for dashboard):
+  pyfw ALL=(root) NOPASSWD: /usr/sbin/ufw status, /usr/sbin/ufw status verbose
+
   IMPORTANT: avoid giving broad or shell-wrapped privileges. Test carefully.
+  The dashboard defaults to read-only mode (ALLOW_FIREWALL_CONTROL="false") for security.
 
 Nginx reverse-proxy + Let's Encrypt (brief)
 - Basic nginx site (adjust server_name and proxy_pass):
